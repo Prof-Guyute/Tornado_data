@@ -1,5 +1,5 @@
-import os, numpy as np, pandas as pd, matplotlib.pyplot as plt, logging, pyperclip, datetime as dt, re
-import json, csv, requests, pickle
+import os, numpy as np, pandas as pd, matplotlib.pyplot as plt, logging
+import requests, pickle
 from bs4 import BeautifulSoup as bs
 
 from mpl_toolkits.basemap import Basemap as bm
