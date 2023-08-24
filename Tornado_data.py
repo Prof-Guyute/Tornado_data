@@ -68,7 +68,7 @@ if __name__=='__main__':
 	files=get_all_files(base)
 	
 	## Trigger for new or old data.
-	new_data=False
+	new_data=True
 	save_data=True
 	
 	if new_data==True and save_data==False:
