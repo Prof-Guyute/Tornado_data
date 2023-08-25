@@ -9,19 +9,28 @@ logging.basicConfig(level=logging.INFO)
 
 def plot_area(df):
 	"""
-	Plot the USA, Canada and Mexico over a certain area. This should be reduced to only show the general area where the tornados are located.
+	Plot the USA, Canada and Mexico over a certain area. This hase been reduced to only show the general area where the tornados are located.
 	"""
-	m = bm(width=12000000,height=9000000,projection='lcc',
-	resolution='c',lat_1=45.,lat_2=55,lat_0=50,lon_0=-107.)
+	
+	#first going to find the extremes of the values
+	#lower left
+	ll_lat=min(df['END_LAT'])-(max(df['END_LAT'])-min(df['END_LAT']))*.05
+	ll_lon=min(df['END_LON'])-(max(df['END_LON'])-min(df['END_LON']))*.05
+	#upper right
+	ur_lat=max(df['END_LAT'])+(max(df['END_LAT'])-min(df['END_LAT']))*.05
+	ur_lon=max(df['END_LON'])+(max(df['END_LON'])-min(df['END_LON']))*.05
+	
+	m = bm(projection='merc', resolution='c',llcrnrlat=ll_lat,llcrnrlon=ll_lon,urcrnrlat=ur_lat,urcrnrlon=ur_lon)
 	m.drawcoastlines()
 	m.drawcountries()
 	m.drawstates()
 	
-	for i,row in df.iloc[100:150].iterrows():
+	for i,row in df.iterrows():
+		#need to have latlon=True so that it is parsed as lat and long.
 		m.plot((row['BEGIN_LON'],row['END_LON']),(row['BEGIN_LAT'],row['END_LAT']),zorder=5,latlon=True)
 	
 	for i,row in df[(df['END_LON'].isna()) | (df['END_LAT'].isna())].iterrows():
-		m.plot(row['BEGIN_LON'],row['BEGIN_LAT'],zorder=5,latlon=True)
+		m.plot(row['BEGIN_LON'],row['BEGIN_LAT'],'.',ms=2,zorder=5,latlon=True)
 
 def get_all_files(base=r'https://www.ncei.noaa.gov/pub/data/swdi/stormevents/csvfiles/'):
 	"""
@@ -67,7 +76,7 @@ if __name__=='__main__':
 	base=r'https://www.ncei.noaa.gov/pub/data/swdi/stormevents/csvfiles/'
 	files=get_all_files(base)
 	
-	## Trigger for new or old data.
+	## Trigger for new or old data. New_data=True pulls new data each time the script runs. Save_data=True will save a copy of the data locally, needs to be recorded for New_data=False.
 	new_data=True
 	save_data=True
 	
